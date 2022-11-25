@@ -14,7 +14,11 @@ async function signup(e) {
         window.location.href = "login.html";
       }, 2000);
     } catch (err) {
+      const doc = document.body.innerHTML;
       document.body.innerHTML += `<div id="error" style="color: red";>${err} user Already found please try to login</div>`;
+      setTimeout(() => {
+        document.body.innerHTML = doc;
+      }, 4000);
     }
   } catch (err) {
     document.body.innerHTML += `<div id="error" style="color: red";>${err}</div>`;
