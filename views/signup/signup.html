@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../styles/signup.css" />
+  </head>
+  <body>
+    <div id="container">
+      <form onsubmit="signup(event)">
+        <label
+          for="loginmsg"
+          style="
+            color: hsla(0, 100%, 50%, 0.5);
+            font-family: 'Helvetica Neue', Helvetica, sans-serif;
+          "
+        ></label>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <div id="lower">
+          <a href="login.html">Existing User Login</a>
+          <button type="submit" value="SignUp">Signup</button>
+        </div>
+      </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="signup.js"></script>
+  </body>
+</html>

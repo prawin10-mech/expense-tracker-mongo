@@ -88,17 +88,14 @@ input[type="email"]:focus {
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
 }
-input[type="checkbox"] {
-  margin-left: 20px;
-  margin-top: 30px;
+#lower a {
+  height: 30px;
+  color: #fff;
+  border: 1px solid black;
+  background-color: #053435;
+  margin: 20px;
 }
-.check {
-  margin-left: 3px;
-  font-size: 11px;
-  color: #444;
-  text-shadow: 0 1px 0 #fff;
-}
-input[type="submit"] {
+#lower button {
   float: right;
   margin-right: 20px;
   margin-top: 20px;
