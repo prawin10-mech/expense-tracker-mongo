@@ -24,3 +24,19 @@ exports.getUsers = (req, res, next) => {
     res.json(data);
   });
 };
+
+exports.getLogin = (req, res, next) => {
+  try {
+    const email = req.params.email;
+    User.findAll({ where: { email: email } })
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (err) {
+    console.log("object");
+    res.status(400).send("User Already Exist");
+  }
+};
