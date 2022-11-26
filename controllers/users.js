@@ -1,17 +1,22 @@
 const User = require("../models/users");
-
+const Bcrypt = require("bcrypt");
 //add users
+
 exports.postUser = async (req, res, next) => {
   try {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
-    const user = await User.create({
-      name: name,
-      email: email,
-      password: password,
+    const saltRounds = 10;
+    Bcrypt.hash(password, saltRounds, async (err, hash) => {
+      console.log(err);
+      const user = await User.create({
+        name: name,
+        email: email,
+        password: hash,
+      });
+      res.status(200).json(user);
     });
-    res.status(200).json(user);
   } catch (err) {
     console.log("object");
     res.status(400).send("User Already Exist");
@@ -25,18 +30,31 @@ exports.getUsers = (req, res, next) => {
   });
 };
 
-exports.getLogin = (req, res, next) => {
+exports.postlogin = async (req, res, next) => {
   try {
-    const email = req.params.email;
-    User.findAll({ where: { email: email } })
-      .then((data) => {
-        res.send(data);
-      })
-      .catch((err) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await User.findAll({ where: { email: email } });
+    Bcrypt.compare(password, user[0].password, (err, result) => {
+      if (err) {
         console.log(err);
-      });
+        res.json({ success: false, message: "Something went wrong" });
+      }
+      if (result) {
+        res.send({
+          success: true,
+          message:
+            "you have logged in successfully please wait until it redirects",
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "your password was incorrect",
+        });
+      }
+    });
   } catch (err) {
-    console.log("object");
-    res.status(400).send("User Already Exist");
+    console.log(err);
+    res.json({ message: "User Not found Please Try to login" });
   }
 };
