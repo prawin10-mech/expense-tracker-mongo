@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../styles/signup.css" />
+  </head>
+  <body>
+    <div id="container">
+      <form onsubmit="addExpense(event)">
+        <label for="money">Money</label
+        ><input type="text" name="money" id="money" />
+        <label for="description">Description</label
+        ><input type="text" name="description" id="description" />
+        <label for="category"></label
+        ><select id="category">
+          <option value="movies">Movies</option>
+          <option value="groceries">Groceries</option>
+          <option value="houseHold">House hold items</option>
+          <option value="others">Others</option>
+        </select>
+        <input type="submit" value="Add Expense" />
+      </form>
+    </div>
+    <div id="addExpenses"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="expenses.js"></script>
+  </body>
+</html>

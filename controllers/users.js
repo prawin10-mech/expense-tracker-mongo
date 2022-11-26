@@ -1,7 +1,10 @@
+//models
 const User = require("../models/users");
-const Bcrypt = require("bcrypt");
-//add users
 
+//encrypting the password
+const Bcrypt = require("bcrypt");
+
+//add users
 exports.postUser = async (req, res, next) => {
   try {
     const name = req.body.name;
@@ -30,6 +33,7 @@ exports.getUsers = (req, res, next) => {
   });
 };
 
+//check login details
 exports.postlogin = async (req, res, next) => {
   try {
     const email = req.body.email;

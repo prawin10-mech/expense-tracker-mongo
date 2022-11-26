@@ -12,6 +12,12 @@ async function login(e) {
       const body = document.body.innerHTML;
       document.body.innerHTML += `<div id="error" style="color: green";>${result.data.message}</div>`;
       setTimeout(() => {
+        if (result.data.success) {
+          window.location.href = "../expenses/expenses.html";
+        }
+      }, 2000);
+
+      setTimeout(() => {
         document.body.innerHTML = body;
       }, 3000);
     });

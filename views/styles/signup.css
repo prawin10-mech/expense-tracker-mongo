@@ -160,3 +160,10 @@ input[type="submit"]:active {
   bottom: 10%;
   right: 45%;
 }
+
+#addExpenses {
+  height: 100vh;
+  position: fixed;
+  width: 30%;
+  flex-direction: column;
+}
