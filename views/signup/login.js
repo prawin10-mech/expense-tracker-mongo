@@ -11,6 +11,7 @@ async function login(e) {
     .then((result) => {
       const body = document.body.innerHTML;
       document.body.innerHTML += `<div id="error" style="color: green";>${result.data.message}</div>`;
+      localStorage.setItem("token", result.data.token);
       setTimeout(() => {
         if (result.data.success) {
           window.location.href = "../expenses/expenses.html";

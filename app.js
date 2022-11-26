@@ -16,6 +16,13 @@ app.use(express.json());
 app.use("/users", userRouter);
 app.use(expenseRouter);
 
+const User = require("./models/users");
+const Expense = require("./models/expenses");
+
+//associations
+Expense.belongsTo(User);
+User.hasMany(Expense);
+
 sequelize
   .sync()
   .then(

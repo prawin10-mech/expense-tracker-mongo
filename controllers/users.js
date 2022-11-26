@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 //models
 const User = require("../models/users");
 
@@ -33,6 +35,13 @@ exports.getUsers = (req, res, next) => {
   });
 };
 
+function generateJwtToken(id, email) {
+  return jwt.sign(
+    { userId: id, email: email },
+    "989qDQCRetvcc84c982ae4tb45uf78f7qnm67928aim56unsb5ye24f98qf4"
+  );
+}
+
 //check login details
 exports.postlogin = async (req, res, next) => {
   try {
@@ -49,6 +58,7 @@ exports.postlogin = async (req, res, next) => {
           success: true,
           message:
             "you have logged in successfully please wait until it redirects",
+          token: generateJwtToken(user[0].id, user[0].email),
         });
       } else {
         res.json({

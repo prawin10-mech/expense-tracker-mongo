@@ -10,9 +10,13 @@ async function addExpense(e) {
     category: category,
   };
   try {
+    const token = localStorage.getItem("token");
     const response = await axios.post(
       "http://localhost:3000/expenses",
-      expense
+      expense,
+      {
+        headers: { Authorization: token },
+      }
     );
     showDetailsOnDisplay(response.data);
   } catch (err) {
@@ -22,8 +26,11 @@ async function addExpense(e) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const getData = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`http://localhost:3000/expenses`);
+      const response = await axios.get(`http://localhost:3000/expenses`, {
+        headers: { Authorization: token },
+      });
       let data = response.data;
       for (let i = 0; i < data.length; i++) {
         showDetailsOnDisplay(response.data[i]);
@@ -53,8 +60,11 @@ const showDetailsOnDisplay = async (data) => {
 
 const deleteData = async (userId) => {
   try {
-    await axios.delete(`http://localhost:3000/expenses/delete/${userId}`);
     deleteDataFromDisplay(userId);
+    const token = localStorage.getItem("token");
+    await axios.delete(`http://localhost:3000/expenses/delete/${userId}`, {
+      headers: { Authorization: token },
+    });
   } catch (err) {
     console.log(err);
   }

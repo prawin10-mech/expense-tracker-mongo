@@ -8,12 +8,15 @@ exports.postExpenses = async (req, res, next) => {
     money: money,
     description: description,
     category: category,
+    userId: req.user.id,
   });
   res.status(200).json(expense);
 };
 
 exports.getExpenses = (req, res, next) => {
-  Expense.findAll().then((result) => {
+  //Expense.findAll({ where: { userId: req.user.id } }).then((result) => {
+
+  req.user.getExpenses().then((result) => {
     res.status(200).send(result);
   });
 };
@@ -21,15 +24,15 @@ exports.getExpenses = (req, res, next) => {
 exports.getExpense = (req, res, next) => {
   const id = req.params.id;
   Expense.findAll({ where: { id: id } }).then((result) => {
-    console.log(result);
     res.status(200).send(result);
   });
 };
 
 exports.deleteExpense = (req, res, next) => {
   const expenseId = req.params.id;
-  console.log(expenseId);
-  Expense.destroy({ where: { id: expenseId } }).then(() => {
-    res.status(200);
-  });
+  Expense.destroy({ where: { id: expenseId, userId: req.user.id } }).then(
+    () => {
+      res.status(200);
+    }
+  );
 };
