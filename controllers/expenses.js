@@ -16,9 +16,15 @@ exports.postExpenses = async (req, res, next) => {
 exports.getExpenses = (req, res, next) => {
   //Expense.findAll({ where: { userId: req.user.id } }).then((result) => {
 
+  const isPremium = req.user.isPremiumUser;
+  console.log(isPremium);
   req.user.getExpenses().then((result) => {
     res.status(200).send(result);
   });
+};
+exports.isPremium = (req, res) => {
+  const isPremium = req.user.isPremiumUser;
+  res.status(200).send(isPremium);
 };
 
 exports.getExpense = (req, res, next) => {

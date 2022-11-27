@@ -23,4 +23,10 @@ router.delete(
   userAuthenticate.authenticate,
   expenseController.deleteExpense
 );
+
+router.get(
+  "/payment/membership",
+  userAuthenticate.authenticate,
+  expenseController.isPremium
+);
 module.exports = router;
