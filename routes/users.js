@@ -13,4 +13,6 @@ router.post("/login/:email", usercontroller.postlogin);
 
 router.get("/users/premiumusers", usercontroller.getPremiumUsers);
 
+router.get("/password/forgotpassword/:email", usercontroller.getForgotPassword);
+
 module.exports = router;

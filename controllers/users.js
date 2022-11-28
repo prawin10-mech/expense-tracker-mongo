@@ -85,3 +85,8 @@ exports.getPremiumUsers = (req, res, next) => {
     res.json(result);
   });
 };
+
+exports.getForgotPassword = (req, res, next) => {
+  const email = req.params.email;
+  res.json(email);
+};
