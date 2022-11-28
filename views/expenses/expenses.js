@@ -136,8 +136,58 @@ const getUsers = async () => {
     const btn = document.getElementById("premiumBtn");
     btn.classList.add("active");
     document.body.style.background = "#778899";
-    document.body.re;
   }
-  console.log(isPremiumUser);
+
+  const premiumUsers = await axios.get(
+    "http://localhost:3000/users/users/premiumusers"
+  );
+
+  let premiumUsersData = [];
+  const n = premiumUsers.data;
+  for (let i = 0; i < n.length; i++) {
+    const userId = n[i].id;
+    const premiumUserExpenses = await axios.get(
+      `http://localhost:3000/users/premiumusers/expenses/${n[i].id}`
+    );
+    const userObject = {
+      userId: userId,
+      expenselength: `${premiumUserExpenses.data.length}`,
+    };
+    premiumUsersData.push(userObject);
+  }
+  premiumUsersData.sort(function (a, b) {
+    return b.expenselength.localeCompare(a.expenselength);
+  });
+  console.log(premiumUsersData);
+
+  const parentNode = document.getElementById("leaderboard");
+  const childNode = `<div id="leader">leaderboard</div>`;
+  parentNode.innerHTML = childNode;
+  for (let i = 0; i < premiumUsersData.length; i++) {
+    const user = await axios.get(
+      `http://localhost:3000/users/${premiumUsersData[i].userId}`
+    );
+    const name = user.data[0].name;
+    const childNode = `<li><button onclick="getExpenseDetails(${premiumUsersData[i].userId})">${name}</button></li>`;
+    parentNode.innerHTML += childNode;
+  }
 };
 getUsers();
+
+async function getExpenseDetails(id) {
+  const userDetails = await axios.get(
+    `http://localhost:3000/users/premiumusers/expenses/${id}`
+  );
+  const userExpensedetails = userDetails.data;
+  var parentNode = document.getElementById("addExpenses");
+  parentNode.innerHTML = "";
+  for (let i = 0; i < userExpensedetails.length; i++) {
+    const data = userExpensedetails[i];
+
+    var childNode = `<li id=${data.id}>${data.money} Rupees for ${data.description}-${data.category}
+                    <button id="editBtn" onclick="editData('${data.id}')">Edit</button>
+                    <button id="deleteBtn" onclick="deleteData('${data.id}')">X</button>
+                    </li>`;
+    parentNode.innerHTML += childNode;
+  }
+}

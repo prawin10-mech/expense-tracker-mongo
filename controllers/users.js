@@ -72,3 +72,16 @@ exports.postlogin = async (req, res, next) => {
     res.json({ message: "User Not found Please Try to login" });
   }
 };
+
+exports.getUser = async (req, res, next) => {
+  const id = req.params.id;
+  const userDetails = await User.findAll({ where: { id: id } });
+  res.json(userDetails);
+};
+
+exports.getPremiumUsers = (req, res, next) => {
+  User.findAll({ where: { isPremiumUser: 1 } }).then((result) => {
+    console.log(result);
+    res.json(result);
+  });
+};

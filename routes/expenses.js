@@ -29,4 +29,10 @@ router.get(
   userAuthenticate.authenticate,
   expenseController.isPremium
 );
+
+router.get(
+  "/users/premiumusers/expenses/:id",
+  expenseController.getPremiumUsersExpenses
+);
+
 module.exports = router;

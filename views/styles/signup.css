@@ -183,3 +183,25 @@ input[type="submit"]:active {
 .active {
   display: none;
 }
+
+#leaderboard {
+  list-style: decimal;
+  float: right;
+  color: #fff;
+  padding: 50px;
+  font-size: 20px;
+}
+
+#leaderboard li button {
+  background-color: grey;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+}
+
+#leader {
+  color: papayawhip;
+  text-decoration: dashed;
+  font-weight: 900;
+  margin-bottom: 10px;
+}

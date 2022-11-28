@@ -22,6 +22,7 @@ exports.getExpenses = (req, res, next) => {
     res.status(200).send(result);
   });
 };
+
 exports.isPremium = (req, res) => {
   const isPremium = req.user.isPremiumUser;
   res.status(200).send(isPremium);
@@ -41,4 +42,11 @@ exports.deleteExpense = (req, res, next) => {
       res.status(200);
     }
   );
+};
+
+exports.getPremiumUsersExpenses = (req, res, next) => {
+  const id = req.params.id;
+  Expense.findAll({ where: { userId: id } }).then((result) => {
+    res.json(result);
+  });
 };
