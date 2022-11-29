@@ -51,7 +51,6 @@ exports.postlogin = async (req, res, next) => {
     const user = await User.findAll({ where: { email: email } });
     Bcrypt.compare(password, user[0].password, (err, result) => {
       if (err) {
-        console.log(err);
         res.json({ success: false, message: "Something went wrong" });
       }
       if (result) {
@@ -69,7 +68,6 @@ exports.postlogin = async (req, res, next) => {
       }
     });
   } catch (err) {
-    console.log(err);
     res.json({ message: "User Not found Please Try to login" });
   }
 };
@@ -82,25 +80,6 @@ exports.getUser = async (req, res, next) => {
 
 exports.getPremiumUsers = (req, res, next) => {
   User.findAll({ where: { isPremiumUser: 1 } }).then((result) => {
-    console.log(result);
     res.json(result);
-  });
-};
-
-exports.getForgotPassword = async (req, res, next) => {
-  const email = req.params.email;
-  const user = await User.findAll({ where: { email: email } });
-  res.json(user);
-};
-
-exports.postResetPassword = async (req, res, next) => {
-  const email = req.params.email;
-  const saltRounds = 10;
-  const password = req.body.password;
-
-  Bcrypt.hash(password, saltRounds, async (err, hash) => {
-    User.findOne({ where: { email: email } }).then((user) => {
-      user.update({ password: hash });
-    });
   });
 };

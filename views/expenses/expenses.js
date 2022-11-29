@@ -1,3 +1,4 @@
+const token = localStorage.getItem("token");
 async function addExpense(e) {
   e.preventDefault();
   const money = e.target.money.value;
@@ -126,7 +127,6 @@ document.getElementById("premiumBtn").onclick = async function (e) {
 };
 
 const getUsers = async () => {
-  const token = localStorage.getItem("token");
   const user = await axios.get("http://localhost:3000/payment/membership", {
     headers: { Authorization: token },
   });
@@ -136,42 +136,47 @@ const getUsers = async () => {
     const btn = document.getElementById("premiumBtn");
     btn.classList.add("active");
     document.body.style.background = "#778899";
-  }
 
-  const premiumUsers = await axios.get(
-    "http://localhost:3000/users/users/premiumusers"
-  );
-
-  let premiumUsersData = [];
-  const n = premiumUsers.data;
-  for (let i = 0; i < n.length; i++) {
-    const userId = n[i].id;
-    const premiumUserExpenses = await axios.get(
-      `http://localhost:3000/users/premiumusers/expenses/${n[i].id}`
+    const premiumUsers = await axios.get(
+      "http://localhost:3000/users/users/premiumusers"
     );
-    const userObject = {
-      userId: userId,
-      expenselength: `${premiumUserExpenses.data.length}`,
-    };
-    premiumUsersData.push(userObject);
-  }
-  premiumUsersData.sort(function (a, b) {
-    return b.expenselength.localeCompare(a.expenselength);
-  });
-  console.log(premiumUsersData);
 
-  const parentNode = document.getElementById("leaderboard");
-  const childNode = `<div id="leader">leaderboard</div>`;
-  parentNode.innerHTML = childNode;
-  for (let i = 0; i < premiumUsersData.length; i++) {
-    const user = await axios.get(
-      `http://localhost:3000/users/${premiumUsersData[i].userId}`
-    );
-    const name = user.data[0].name;
-    const childNode = `<li><button onclick="getExpenseDetails(${premiumUsersData[i].userId})">${name}</button></li>`;
-    parentNode.innerHTML += childNode;
+    let premiumUsersData = [];
+    const n = premiumUsers.data;
+    for (let i = 0; i < n.length; i++) {
+      const userId = n[i].id;
+      const premiumUserExpenses = await axios.get(
+        `http://localhost:3000/users/premiumusers/expenses/${n[i].id}`
+      );
+      const userObject = {
+        userId: userId,
+        expenselength: `${premiumUserExpenses.data.length}`,
+      };
+      premiumUsersData.push(userObject);
+    }
+    premiumUsersData.sort(function (a, b) {
+      return b.expenselength.localeCompare(a.expenselength);
+    });
+    console.log(premiumUsersData);
+
+    const parentNode = document.getElementById("leaderboard");
+    const childNode = `<div id="leader">leaderboard</div>`;
+    parentNode.innerHTML = childNode;
+    for (let i = 0; i < premiumUsersData.length; i++) {
+      console.log(premiumUsersData[i].userId);
+      const user = await axios.get(
+        `http://localhost:3000/users/${premiumUsersData[i].userId}`
+      );
+      const name = user.data[0].name;
+      const childNode = `<li><button onclick="getExpenseDetails(${premiumUsersData[i].userId})">${name}</button></li>`;
+      parentNode.innerHTML += childNode;
+    }
   }
 };
+
+axios.get("http://localhost:3000/users/users/premiumusers").then((user) => {
+  console.log(user);
+});
 getUsers();
 
 async function getExpenseDetails(id) {

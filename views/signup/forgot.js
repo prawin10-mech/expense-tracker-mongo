@@ -3,11 +3,13 @@ async function forgot(e) {
   e.preventDefault();
   email = document.getElementById("email").value;
   const parentNode = document.getElementById("resetLink");
-  const forgotPassword = await axios.get(
-    `http://localhost:3000/users/password/forgotpassword/${email}`
+
+  const forgotPassword = await axios.post(
+    `http://localhost:3000/password/forgotpassword/${email}`
   );
-  document.getElementById("active").classList.remove("active");
-  document.getElementById("update").classList.remove("active");
+  console.log(forgotPassword);
+  const childNode = forgotPassword.data.resetlink;
+  parentNode.innerHTML = childNode;
 }
 
 async function resetPassword() {
@@ -20,7 +22,6 @@ async function resetPassword() {
     password: newPassword,
   };
 
-  console.log("hello");
   document.body.innerHTML += `<div id="error" style="color: green";>Password updated successfully please wait until the page redirects</div>`;
   const token = localStorage.getItem("token");
   await axios.post(

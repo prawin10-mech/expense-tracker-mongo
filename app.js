@@ -12,12 +12,17 @@ const sequelize = require("./util/database");
 const purchaseRoutes = require("./routes/purchase");
 const userRouter = require("./routes/users");
 const expenseRouter = require("./routes/expenses");
+const forgotRouter = require("./routes/forgot");
 
 app.use(express.json());
+
+//Routes
 app.use("/purchase", purchaseRoutes);
 app.use("/users", userRouter);
 app.use(expenseRouter);
+app.use("/password", forgotRouter);
 
+//models
 const Order = require("./models/orders");
 const User = require("./models/users");
 const Expense = require("./models/expenses");

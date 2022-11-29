@@ -14,11 +14,4 @@ router.post("/login/:email", usercontroller.postlogin);
 
 router.get("/users/premiumusers", usercontroller.getPremiumUsers);
 
-router.get("/password/forgotpassword/:email", usercontroller.getForgotPassword);
-
-router.post(
-  "/password/forgotpassword/resetpassword/:email",
-  authenticatemiddleware.authenticate,
-  usercontroller.postResetPassword
-);
 module.exports = router;
