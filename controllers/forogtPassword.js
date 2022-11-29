@@ -36,11 +36,10 @@ exports.resetpassword = (req, res) => {
     if (forgotpassword) {
       forgotpassword.update({ active: false });
       res.status(200).send(`<html>
-                                
+                                    
                                     <script>
                                         function formsubmitted(e){
                                             e.preventDefault();
-                                            window.location.href= "D:\sharpner\backend\expenseTracker\views\signup\login.html";
                                             console.log('called')
                                         }
                                     </script>

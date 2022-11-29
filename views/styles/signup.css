@@ -223,3 +223,20 @@ input[type="submit"]:active {
 #update {
   margin-left: 85px;
 }
+
+#expenses {
+  color: #fff;
+  text-decoration: none;
+  padding: 5px;
+  border: 1px solid #fff;
+  background-color: #000;
+  margin-bottom: 15px;
+}
+
+#download {
+  position: absolute;
+  bottom: 40px;
+  width: 200px;
+  left: 45%;
+  right: 0;
+}

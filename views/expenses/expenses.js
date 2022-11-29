@@ -157,10 +157,10 @@ const getUsers = async () => {
     premiumUsersData.sort(function (a, b) {
       return b.expenselength.localeCompare(a.expenselength);
     });
-    console.log(premiumUsersData);
 
     const parentNode = document.getElementById("leaderboard");
-    const childNode = `<div id="leader">leaderboard</div>`;
+
+    const childNode = `<a id="expenses" href="expensesData.html">Expenses</a><div id="leader">leaderboard</div>`;
     parentNode.innerHTML = childNode;
     for (let i = 0; i < premiumUsersData.length; i++) {
       console.log(premiumUsersData[i].userId);
@@ -195,4 +195,24 @@ async function getExpenseDetails(id) {
                     </li>`;
     parentNode.innerHTML += childNode;
   }
+}
+
+function downloadExpense() {
+  axios
+    .get("http://localhost:3000/users/expenses/download", {
+      headers: { Authorization: token },
+    })
+    .then((response) => {
+      if (response.status == 201) {
+        const a = document.createElement("a");
+        a.href = response.data.fileUrl;
+        a.download = "myexpense.csv";
+        a.click();
+      } else {
+        throw new Error(response.data.message);
+      }
+    })
+    .catch((err) => {
+      showError(err);
+    });
 }
