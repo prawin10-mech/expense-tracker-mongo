@@ -206,13 +206,20 @@ input[type="submit"]:active {
   margin-bottom: 10px;
 }
 
-#reset {
-  margin: 0 auto;
+#reset,
+#update {
   width: 50%;
   margin-top: 30px;
   padding: 5px;
   background-color: greenyellow;
-  display: flex;
   font-weight: 600;
+  margin: 10px auto;
+}
+#reset {
+  display: flex;
   justify-content: center;
+}
+
+#update {
+  margin-left: 85px;
 }

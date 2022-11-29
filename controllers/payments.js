@@ -9,7 +9,6 @@ const premiumMembership = async (req, res, next) => {
     });
     const amount = 599;
     rzp.orders.create({ amount, currency: "INR" }, (err, order) => {
-      console.log(order);
       if (err) {
         throw new Error(err);
       }

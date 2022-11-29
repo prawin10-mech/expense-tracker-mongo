@@ -21,6 +21,7 @@ app.use(expenseRouter);
 const Order = require("./models/orders");
 const User = require("./models/users");
 const Expense = require("./models/expenses");
+const forgotPassword = require("./models/forgot_password");
 
 //associations
 Expense.belongsTo(User);
@@ -28,6 +29,9 @@ User.hasMany(Expense);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(forgotPassword);
+forgotPassword.belongsTo(User);
 
 sequelize
   .sync()

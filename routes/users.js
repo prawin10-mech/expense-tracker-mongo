@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const usercontroller = require("../controllers/users");
+const authenticatemiddleware = require("../middleware/authenticate");
 
 router.post("/signup", usercontroller.postUser);
 
@@ -15,4 +16,9 @@ router.get("/users/premiumusers", usercontroller.getPremiumUsers);
 
 router.get("/password/forgotpassword/:email", usercontroller.getForgotPassword);
 
+router.post(
+  "/password/forgotpassword/resetpassword/:email",
+  authenticatemiddleware.authenticate,
+  usercontroller.postResetPassword
+);
 module.exports = router;

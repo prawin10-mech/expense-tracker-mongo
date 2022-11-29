@@ -15,6 +15,7 @@ exports.postUser = async (req, res, next) => {
     const saltRounds = 10;
     Bcrypt.hash(password, saltRounds, async (err, hash) => {
       console.log(err);
+      console.log(hash);
       const user = await User.create({
         name: name,
         email: email,
@@ -86,7 +87,20 @@ exports.getPremiumUsers = (req, res, next) => {
   });
 };
 
-exports.getForgotPassword = (req, res, next) => {
+exports.getForgotPassword = async (req, res, next) => {
   const email = req.params.email;
-  res.json(email);
+  const user = await User.findAll({ where: { email: email } });
+  res.json(user);
+};
+
+exports.postResetPassword = async (req, res, next) => {
+  const email = req.params.email;
+  const saltRounds = 10;
+  const password = req.body.password;
+
+  Bcrypt.hash(password, saltRounds, async (err, hash) => {
+    User.findOne({ where: { email: email } }).then((user) => {
+      user.update({ password: hash });
+    });
+  });
 };

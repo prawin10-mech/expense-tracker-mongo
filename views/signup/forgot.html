@@ -14,7 +14,14 @@
         ><input type="email" name="email" id="email" required />
         <button id="reset">Reset Password</button>
       </form>
+      <input type="text" class="active" id="active" />
+      <button id="update" class="active" onclick="resetPassword()">
+        Update Password
+      </button>
+      <div id="resetLink"></div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="forgot.js"></script>
   </body>
 </html>
