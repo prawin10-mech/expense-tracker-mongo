@@ -1,4 +1,5 @@
 const Expense = require("../models/expenses");
+const AWS = require("aws-sdk");
 
 exports.postExpenses = async (req, res, next) => {
   const money = req.body.money;
@@ -49,4 +50,35 @@ exports.getPremiumUsersExpenses = (req, res, next) => {
   Expense.findAll({ where: { userId: id } }).then((result) => {
     res.json(result);
   });
+};
+
+function uploadToS3(data, filename) {
+  let s3bucket = new AWS.S3({
+    accessKeyId: process.env.I_AM_USER_KEY,
+    secretAccessKey: process.env.I_AM_USER_SECRET,
+  });
+
+  let params = {
+    Bucket: process.env.BUCKET_NAME,
+    Key: filename,
+    Body: data,
+    ACL: "public-read",
+  };
+  return new Promise((resolve, reject) => {
+    s3bucket.upload(params, (err, s3response) => {
+      if (err) {
+        console.log("something went wrong");
+        reject(err);
+      }
+      resolve(s3response.Location);
+    });
+  });
+}
+
+exports.downloadExpenses = async (req, res, next) => {
+  const expenses = await req.user.getExpenses();
+  const stringifiedExpenses = JSON.stringify(expenses);
+  const filename = `expenses${req.user.userId}/${new Date()}.txt`;
+  const fileURL = await uploadToS3(stringifiedExpenses, filename);
+  res.status(200).json({ fileURL, success: true });
 };

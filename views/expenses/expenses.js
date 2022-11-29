@@ -203,7 +203,8 @@ function downloadExpense() {
       headers: { Authorization: token },
     })
     .then((response) => {
-      if (response.status == 201) {
+      console.log(response);
+      if (response.status == 200) {
         const a = document.createElement("a");
         a.href = response.data.fileUrl;
         a.download = "myexpense.csv";

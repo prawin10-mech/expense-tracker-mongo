@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Prawin310/expenseTracker#readme",
   "dependencies": {
+    "aws-sdk": "^2.1263.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
