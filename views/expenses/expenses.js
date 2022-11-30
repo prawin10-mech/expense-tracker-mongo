@@ -55,6 +55,7 @@ const showDetailsOnDisplay = async (data) => {
     parentNode.innerHTML += childNode;
     document.getElementById("money").value = "";
     document.getElementById("description").value = "";
+    addDownloadedFiles(data.id);
   } catch (err) {
     console.log(err);
   }
@@ -197,23 +198,37 @@ async function getExpenseDetails(id) {
   }
 }
 
-function downloadExpense() {
-  axios
-    .get("http://localhost:3000/users/expenses/download", {
-      headers: { Authorization: token },
-    })
-    .then((response) => {
-      console.log(response);
-      if (response.status == 200) {
-        const a = document.createElement("a");
-        a.href = response.data.fileUrl;
-        a.download = "myexpense.csv";
-        a.click();
-      } else {
-        throw new Error(response.data.message);
+async function downloadExpense() {
+  try {
+    const response = await axios.get(
+      "http://localhost:3000/users/expenses/download",
+      {
+        headers: { Authorization: token },
       }
-    })
-    .catch((err) => {
-      showError(err);
-    });
+    );
+    console.log(response);
+    if (response.status == 200) {
+      const a = document.createElement("a");
+      a.href = response.data.fileURL;
+      console.log(a);
+      a.download = "myexpense.csv";
+      a.click();
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+const addDownlodDFiles = document.getElementById("addDownloadedFiles");
+async function addDownloadedFiles(userId) {
+  const response = await axios.get(
+    "http://localhost:3000/users/expenses/download",
+    {
+      headers: { Authorization: token },
+    }
+  );
+  console.log(response.data.date);
+  addDownlodDFiles.innerHTML += `<a href="${response.data.fileURL}">Expenses${response.data.date}</a>`;
 }

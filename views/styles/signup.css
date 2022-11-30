@@ -235,8 +235,16 @@ input[type="submit"]:active {
 
 #download {
   position: absolute;
-  bottom: 40px;
+  bottom: 50%;
   width: 200px;
-  left: 45%;
-  right: 0;
+  left: 50px;
+  z-index: 10;
+}
+
+#addDownloadedFiles {
+  position: absolute;
+  bottom: 43%;
+  left: 30px;
+  cursor: pointer;
+  z-index: 10;
 }
