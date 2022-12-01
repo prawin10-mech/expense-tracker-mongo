@@ -161,12 +161,31 @@ input[type="submit"]:active {
   right: 45%;
 }
 
-#addExpenses {
-  height: 100vh;
+#addExpensesToDisplay {
+  margin: 10px;
+  height: 65%;
   position: fixed;
   width: 30%;
   flex-direction: column;
   color: #000;
+  border: 2px solid rgb(194, 210, 194);
+  list-style: none;
+  text-align: center;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 500;
+}
+#addExpensesToDisplay li {
+  margin-top: 10px;
+  color: black;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+#pagination {
+  position: fixed;
+  top: 63%;
+  left: 13%;
 }
 
 #premiumBtn {
@@ -235,16 +254,27 @@ input[type="submit"]:active {
 
 #download {
   position: absolute;
-  bottom: 50%;
+  bottom: 40%;
   width: 200px;
-  left: 50px;
+  right: 50px;
   z-index: 10;
 }
 
 #addDownloadedFiles {
   position: absolute;
-  bottom: 43%;
-  left: 30px;
+  top: 65%;
+  right: 50px;
   cursor: pointer;
   z-index: 10;
+}
+
+#logout {
+  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.current {
+  background-color: greenyellow;
 }

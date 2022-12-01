@@ -4,6 +4,8 @@ const FileDownload = require("../models/downloadedFiles");
 const UserServices = require("../services/userServices");
 const S3Services = require("../services/S3services");
 
+let limit_items = 10;
+
 exports.postExpenses = async (req, res, next) => {
   try {
     const money = req.body.money;
@@ -21,13 +23,28 @@ exports.postExpenses = async (req, res, next) => {
   }
 };
 
-exports.getExpenses = (req, res, next) => {
-  //Expense.findAll({ where: { userId: req.user.id } }).then((result) => {
+exports.getExpenses = async (req, res, next) => {
+  let page = req.query.page || 1;
+  // console.log("/////////////////////////", page);
   try {
-    const isPremium = req.user.isPremiumUser;
-    console.log(isPremium);
-    req.user.getExpenses().then((result) => {
-      res.status(200).send(result);
+    let totalExpenses = await Expense.count({ where: { userId: req.user.id } });
+    let expenses = await req.user.getExpenses({
+      offset: (page - 1) * limit_items,
+      limit: limit_items,
+    });
+
+    console.log("////////////////", limit_items);
+    res.status(200).json({
+      expenses,
+      success: true,
+      data: {
+        currentPage: +page,
+        hasNextPage: totalExpenses > page * limit_items,
+        hasPreviousPage: page > 1,
+        nextPage: +page + 1,
+        previousPage: +page - 1,
+        lastPage: Math.ceil(totalExpenses / limit_items),
+      },
     });
   } catch (err) {
     console.log(err);

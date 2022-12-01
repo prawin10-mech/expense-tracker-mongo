@@ -5,8 +5,7 @@ exports.uploadToS3 = async (data, filename) => {
     accessKeyId: process.env.I_AM_USER_KEY,
     secretAccessKey: process.env.I_AM_USER_SECRET,
   });
-
-  console.log(data);
+  console.log("data is downloaded");
   let params = {
     Bucket: process.env.BUCKET_NAME,
     Key: filename,
