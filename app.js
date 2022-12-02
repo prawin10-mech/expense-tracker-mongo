@@ -2,6 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
+const path = require("path");
+const fs = require("fs");
+const https = require("https");
 
 app.use(bodyParser.json({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,7 +20,18 @@ const userRouter = require("./routes/users");
 const expenseRouter = require("./routes/expenses");
 const forgotRouter = require("./routes/forgot");
 
+app.use(helmet());
 app.use(express.json());
+app.use(compression());
+
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.cert");
+
+const assessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flag: "a" }
+);
+app.use(morgan("combined", { strean: assessLogStream }));
 
 //Routes
 app.use("/purchase", purchaseRoutes);

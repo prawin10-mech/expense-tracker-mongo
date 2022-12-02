@@ -4,8 +4,7 @@ const FileDownload = require("../models/downloadedFiles");
 const UserServices = require("../services/userServices");
 const S3Services = require("../services/S3services");
 
-let limit_items = 10;
-
+var limit_items = 10;
 exports.postExpenses = async (req, res, next) => {
   try {
     const money = req.body.money;
@@ -25,7 +24,8 @@ exports.postExpenses = async (req, res, next) => {
 
 exports.getExpenses = async (req, res, next) => {
   let page = req.query.page || 1;
-  // console.log("/////////////////////////", page);
+
+  console.log("//////////////////////", limit_items);
   try {
     let totalExpenses = await Expense.count({ where: { userId: req.user.id } });
     let expenses = await req.user.getExpenses({
