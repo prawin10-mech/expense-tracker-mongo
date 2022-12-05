@@ -4,7 +4,6 @@ const FileDownload = require("../models/downloadedFiles");
 const UserServices = require("../services/userServices");
 const S3Services = require("../services/S3services");
 
-var limit_items = 10;
 exports.postExpenses = async (req, res, next) => {
   try {
     const money = req.body.money;
@@ -23,32 +22,9 @@ exports.postExpenses = async (req, res, next) => {
 };
 
 exports.getExpenses = async (req, res, next) => {
-  let page = req.query.page || 1;
-
-  console.log("//////////////////////", limit_items);
-  try {
-    let totalExpenses = await Expense.count({ where: { userId: req.user.id } });
-    let expenses = await req.user.getExpenses({
-      offset: (page - 1) * limit_items,
-      limit: limit_items,
-    });
-
-    console.log("////////////////", limit_items);
-    res.status(200).json({
-      expenses,
-      success: true,
-      data: {
-        currentPage: +page,
-        hasNextPage: totalExpenses > page * limit_items,
-        hasPreviousPage: page > 1,
-        nextPage: +page + 1,
-        previousPage: +page - 1,
-        lastPage: Math.ceil(totalExpenses / limit_items),
-      },
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  const id = req.user.id;
+  const exp = await Expense.findAll({ where: { userId: id } });
+  res.json(exp);
 };
 
 exports.isPremium = (req, res) => {
@@ -87,6 +63,8 @@ exports.deleteExpense = (req, res, next) => {
 exports.getPremiumUsersExpenses = async (req, res, next) => {
   try {
     const id = req.params.id;
+    console.log(id);
+    console.log("premiumUser", id);
     Expense.findAll({ where: { userId: id } }).then((result) => {
       res.json(result);
     });
@@ -100,7 +78,7 @@ exports.downloadExpenses = async (req, res) => {
     const expenses = await UserServices.getExpenses(req);
     const stringifiedExpenses = JSON.stringify(expenses);
     const filename = `expenses${req.user.id}/${new Date()}.txt`;
-    const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename);
+    const fileURL = "https://www.google.com";
     await FileDownload.create({
       fileURL: fileURL,
     });
@@ -110,4 +88,17 @@ exports.downloadExpenses = async (req, res) => {
     console.log(err);
     res.status(500).json({ fileURL: "", success: false });
   }
+};
+
+let limit = 5;
+exports.getAddPages = (req, res, next) => {
+  const page = req.query.page;
+  const userId = req.user.id;
+  return Expense.findAll({
+    where: { userId: userId },
+    limit: limit,
+    offset: limit * page,
+  }).then((result) => {
+    res.json(result);
+  });
 };

@@ -11,7 +11,7 @@ router.post(
 );
 
 router.get(
-  "/expenses",
+  "/getexpenses",
   userAuthenticate.authenticate,
   expenseController.getExpenses
 );
@@ -33,6 +33,12 @@ router.get(
 router.get(
   "/users/premiumusers/expenses/:id",
   expenseController.getPremiumUsersExpenses
+);
+
+router.get(
+  "/pages",
+  userAuthenticate.authenticate,
+  expenseController.getAddPages
 );
 
 module.exports = router;

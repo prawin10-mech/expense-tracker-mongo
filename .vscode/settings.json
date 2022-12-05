@@ -5,5 +5,7 @@
   "liveshare.diagnosticMode": false,
   "liveshare.guestApprovalRequired": true,
   "liveshare.allowGuestTaskControl": true,
-  "liveshare.alwaysFollowHost": true
+  "liveshare.alwaysFollowHost": true,
+  "livePreview.defaultPreviewPath": "d:\\sharpner\\backend\\expenseTracker\\views\\expenses\\expenses.html",
+  "open-in-browser.default": "chrome"
 }
