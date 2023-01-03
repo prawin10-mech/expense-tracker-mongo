@@ -2,10 +2,13 @@ const token = localStorage.getItem("token");
 
 const pagination = document.getElementById("pagination");
 
+let row = localStorage.getItem("rows");
 pagination.addEventListener("click", (e) => {
   let id = e.target.id;
+  let ids = id.split("=");
+  console.log(ids);
   axios
-    .get(`http://localhost:3000/pages${id}`, {
+    .get(`http://localhost:3000/pages/?page=${ids[1]}&rows=${row}`, {
       headers: { Authorization: token },
     })
     .then((result) => {
@@ -24,22 +27,19 @@ pagination.addEventListener("click", (e) => {
     });
 });
 
-let row = localStorage.getItem("rows");
 function homePage() {
-  console.log(row);
   axios
     .get(`http://localhost:3000/pages?page=0&rows=${row}`, {
       headers: { Authorization: token },
     })
     .then((result) => {
-      let musicLength = result.data.length;
-      let musicData = result.data;
+      let Length = result.data.length;
+      let Data = result.data;
       let childNode = "";
-      for (i = 0; i < musicLength; i++) {
-        let data = musicData[i];
-
-        childNode += `<li id=${data.id}>${data.money} Rupees for ${data.description}-${data.category}
-                    <button id="deleteBtn" onclick="deleteData('${data.id}')">X</button>
+      for (i = 0; i < Length; i++) {
+        let data = Data[i];
+        childNode += `<li id=${data._id}>${data.money} Rupees for ${data.description}-${data.category}
+                    <button id="deleteBtn" onclick="deleteData('${data._id}')">X</button>
                     </li> </ul>`;
       }
       const addExpenses = document.getElementById("addExpenses");
@@ -57,24 +57,25 @@ function pagenation() {
       headers: { Authorization: token },
     })
     .then((response) => {
-      console.log("hello", response, "hello");
       let productLen = response.data.length;
-      console.log(productLen);
-
       if (productLen % 2 == 0) {
         console.log("helloo even");
-        let first = productLen / 5;
+        console.log(row);
+        let first = 1;
+        if (productLen > row) {
+          first = productLen / row;
+        }
+
         console.log(first);
         for (let i = 0; i < first; i++) {
-          pagination.innerHTML += `<button style="border:none; padding: 7px; margin:3px; background:red; 
+          pagination.innerHTML += `<button style="border:none; padding: 7px; margin:3px; background:green; 
           color:#fff; " class="allbtns" id="?page=${c++}">
               ${cc++}
             </button>`;
         }
       } else {
-        let first = Math.trunc(productLen / 5) + 1;
-        console.log("hello odd");
-        for (let i = 0; i < first - 1; i++) {
+        let first = Math.trunc(productLen / row) + 1;
+        for (let i = 0; i < first; i++) {
           pagination.innerHTML += `<button  class="allbtns" id="?page=${c++}">
               ${cc++}
             </button>`;
@@ -117,7 +118,7 @@ const showDetailsOnDisplay = (data) => {
   datas.innerText = "Expenses";
   data.expenses.forEach((data) => {
     var childNode = `<li id=${data.id}>${data.money} Rupees for ${data.description}-${data.category}
-                    <button id="deleteBtn" onclick="deleteData('${data.id}')">X</button>
+                    <button id="deleteBtn" onclick="deleteData('${data}')">X</button>
                     </li> </ul>`;
     datas.innerHTML += childNode;
   });
@@ -129,12 +130,12 @@ const addToDisplay = async (data) => {
   console.log(data);
   var parentNode = document.getElementById("addExpenses");
   var childNode = `<li id=${data.id}>${data.money} Rupees for ${data.description}-${data.category}
-                    <button id="deleteBtn" onclick="deleteDataFromDisplay('${data.id}')">X</button>
+                    <button id="deleteBtn" onclick="deleteDataFromDisplay('${data._id}')">X</button>
                     </li>`;
   parentNode.innerHTML += childNode;
   document.getElementById("money").value = "";
   document.getElementById("description").value = "";
-  addDownloadedFiles(data.id);
+  // addDownloadedFiles(data.id);
 };
 
 const deleteData = async (userId) => {
@@ -163,6 +164,7 @@ document.getElementById("premiumBtn").onclick = async function (e) {
       headers: { Authorization: token },
     }
   );
+  console.log(response);
   var options = {
     key: response.data.key_id, // Enter the Key ID generated from the Dashboard
     name: "Test Company",
@@ -224,7 +226,7 @@ const getUsers = async () => {
     let premiumUsersData = [];
     const n = premiumUsers.data;
     for (let i = 0; i < n.length; i++) {
-      const userId = n[i].id;
+      const userId = n[i]._id;
       const premiumUserExpenses = await axios.get(
         `http://localhost:3000/users/premiumusers/expenses/${userId}`
       );
@@ -239,30 +241,29 @@ const getUsers = async () => {
     });
     sortedArray;
     const parentNode = document.getElementById("leaderboard");
-    const childNode = `<a id="expenses" href="expensesData.html">Expenses</a><div id="leader">leaderboard</div>`;
+    const childNode = `<div id="leader">leaderboard</div>`;
     parentNode.innerHTML = childNode;
     for (let i = 0; i < premiumUsersData.length; i++) {
-      // console.log(premiumUsersData[i].userId);
+      const id = premiumUsersData[i].userId;
       const user = await axios.get(
         `http://localhost:3000/users/${premiumUsersData[i].userId}`
       );
       const name = user.data[0].name;
-      const childNode = `<li><button onclick="getExpenseDetails(${premiumUsersData[i].userId})">${name}</button></li>`;
+      const childNode = `<li><button onclick="getExpenseDetails('${id}')">${name}</button></li>`;
       parentNode.innerHTML += childNode;
     }
   }
 };
 
-//axios.get("http://localhost:3000/users/users/premiumusers").then((user) => {
-// console.log(user);
-//});
 getUsers();
 
 async function getExpenseDetails(id) {
+  console.log(id);
   const userDetails = await axios.get(
     `http://localhost:3000/users/premiumusers/expenses/${id}`
   );
   const userExpensedetails = userDetails.data;
+  console.log(userExpensedetails);
   var parentNode = document.getElementById("addExpenses");
   parentNode.innerHTML = "";
   for (let i = 0; i < userExpensedetails.length; i++) {

@@ -2,19 +2,19 @@ const express = require("express");
 
 const purchaseController = require("../controllers/payments");
 
-const authenticatemiddleware = require("../middleware/authenticate");
+const userAuthenticate = require("../middleware/authenticate");
 
 const router = express.Router();
 
 router.get(
   "/premiummembership",
-  authenticatemiddleware.authenticate,
+  userAuthenticate.authenticate,
   purchaseController.premiumMembership
 );
 
 router.post(
   "/updatetransactionstatus",
-  authenticatemiddleware.authenticate,
+  userAuthenticate.authenticate,
   purchaseController.updateTransactionStatus
 );
 

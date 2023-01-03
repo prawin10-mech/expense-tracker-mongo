@@ -4,32 +4,37 @@ const FileDownload = require("../models/downloadedFiles");
 const UserServices = require("../services/userServices");
 const S3Services = require("../services/S3services");
 
+const mongodb = require("mongodb");
+
 exports.postExpenses = async (req, res, next) => {
   try {
-    const money = req.body.money;
-    const description = req.body.description;
-    const category = req.body.category;
-    const expense = await Expense.create({
-      money: money,
-      description: description,
-      category: category,
-      userId: req.user.id,
+    const { money, description, category } = req.body;
+    const expense = new Expense({
+      money,
+      description,
+      category,
+      userId: req.user._id,
     });
-    res.status(200).json(expense);
+    expense.save().then(() => {
+      res.status(200).json(expense);
+    });
   } catch (err) {
     console.log(err);
   }
 };
 
 exports.getExpenses = async (req, res, next) => {
-  const id = req.user.id;
-  const exp = await Expense.findAll({ where: { userId: id } });
-  res.json(exp);
+  const id = req.user._id;
+  console.log("object", id);
+  Expense.find({ userId: id }).then((exp) => {
+    res.json(exp);
+  });
 };
 
 exports.isPremium = (req, res) => {
   try {
     const isPremium = req.user.isPremiumUser;
+    console.log(isPremium);
     res.status(200).send(isPremium);
   } catch (err) {
     console.log(err);
@@ -39,7 +44,7 @@ exports.isPremium = (req, res) => {
 exports.getExpense = (req, res, next) => {
   try {
     const id = req.params.id;
-    Expense.findAll({ where: { id: id } }).then((result) => {
+    Expense.find({ _id: id }).then((result) => {
       res.status(200).send(result);
     });
   } catch (err) {
@@ -49,12 +54,13 @@ exports.getExpense = (req, res, next) => {
 
 exports.deleteExpense = (req, res, next) => {
   try {
-    const expenseId = req.params.id;
-    Expense.destroy({ where: { id: expenseId, userId: req.user.id } }).then(
-      () => {
-        res.status(200);
-      }
-    );
+    const expenseId = new mongodb.ObjectId(req.params.id);
+    Expense.findByIdAndDelete({
+      _id: expenseId,
+      userId: req.user._id,
+    }).then((result) => {
+      res.json({ success: true });
+    });
   } catch (err) {
     console.log(err);
   }
@@ -62,15 +68,29 @@ exports.deleteExpense = (req, res, next) => {
 
 exports.getPremiumUsersExpenses = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    console.log(id);
-    console.log("premiumUser", id);
-    Expense.findAll({ where: { userId: id } }).then((result) => {
+    const id = new mongodb.ObjectId(req.params.id);
+    Expense.find({ userId: id }).then((result) => {
+      console.log("hello", result);
       res.json(result);
     });
   } catch (err) {
     console.log(err);
   }
+};
+
+//let row = 7;
+exports.getAddPages = (req, res, next) => {
+  let row = +req.query.rows;
+
+  const page = +req.query.page;
+  const userId = req.user.id;
+  return Expense.find({ userId: userId })
+    .limit(row)
+    .skip(row * page)
+    .exec()
+    .then((result) => {
+      res.json(result);
+    });
 };
 
 exports.downloadExpenses = async (req, res) => {
@@ -88,17 +108,4 @@ exports.downloadExpenses = async (req, res) => {
     console.log(err);
     res.status(500).json({ fileURL: "", success: false });
   }
-};
-
-let limit = 5;
-exports.getAddPages = (req, res, next) => {
-  const page = req.query.page;
-  const userId = req.user.id;
-  return Expense.findAll({
-    where: { userId: userId },
-    limit: limit,
-    offset: limit * page,
-  }).then((result) => {
-    res.json(result);
-  });
 };

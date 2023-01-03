@@ -11,6 +11,6 @@ router.get(
 
 router.get("/resetpassword/:id", resetpasswordController.resetpassword);
 
-router.post("/forgotpassword/:email", resetpasswordController.forgotpassword);
+router.get("/forgotpassword/:email", resetpasswordController.forgotpassword);
 
 module.exports = router;

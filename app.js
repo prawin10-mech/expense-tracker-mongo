@@ -2,54 +2,33 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
-const helmet = require("helmet");
+
+const mongoose = require("mongoose");
 
 app.use(bodyParser.json({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-const sequelize = require("./util/database");
-
-const purchaseRoutes = require("./routes/purchase");
-const userRouter = require("./routes/users");
-const expenseRouter = require("./routes/expenses");
-const forgotRouter = require("./routes/forgot");
-
 app.use(express.json());
 
 //Routes
-app.use("/purchase", purchaseRoutes);
+const userRouter = require("./routes/users");
+const expenseRouter = require("./routes/expenses");
+const purchaseRouter = require("./routes/purchase");
+const forgotRouter = require("./routes/forgot");
+
+app.use("/purchase", purchaseRouter);
 app.use("/users", userRouter);
 app.use(expenseRouter);
 app.use("/password", forgotRouter);
 
-//models
-const Order = require("./models/orders");
-const User = require("./models/users");
-const Expense = require("./models/expenses");
-const forgotPassword = require("./models/forgot_password");
-const fileDownload = require("./models/downloadedFiles");
-
-//associations
-Expense.belongsTo(User);
-User.hasMany(Expense);
-
-User.hasMany(Order);
-Order.belongsTo(User);
-
-User.hasMany(forgotPassword);
-forgotPassword.belongsTo(User);
-
-User.hasMany(fileDownload);
-fileDownload.belongsTo(User);
-
-sequelize
-  .sync()
-  .then(
+mongoose
+  .connect(
+    "mongodb+srv://praveen:Prawin10@cluster0.cdcefpk.mongodb.net/?retryWrites=true&w=majority"
+    // "mongodb://localhost:27017"
+  )
+  .then(() => {
     app.listen(3000, () => {
       console.log("server started");
-    })
-  )
-  .catch((err) => {
-    console.log(err);
+    });
   });

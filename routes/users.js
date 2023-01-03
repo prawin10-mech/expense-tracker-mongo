@@ -15,10 +15,10 @@ router.post("/login/:email", usercontroller.postlogin);
 
 router.get("/users/premiumusers", usercontroller.getPremiumUsers);
 
-router.get(
-  "/expenses/download",
-  userAuthenticate.authenticate,
-  expenseController.downloadExpenses
-);
+// router.get(
+//   "/expenses/download",
+//   userAuthenticate.authenticate,
+//   expenseController.downloadExpenses
+// );
 
 module.exports = router;

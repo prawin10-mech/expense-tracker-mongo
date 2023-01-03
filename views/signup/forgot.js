@@ -4,7 +4,7 @@ async function forgot(e) {
   email = document.getElementById("email").value;
   const parentNode = document.getElementById("resetLink");
 
-  const forgotPassword = await axios.post(
+  const forgotPassword = await axios.get(
     `http://localhost:3000/password/forgotpassword/${email}`
   );
   console.log(forgotPassword);

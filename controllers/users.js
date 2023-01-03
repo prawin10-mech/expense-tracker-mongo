@@ -3,25 +3,26 @@ const jwt = require("jsonwebtoken");
 //models
 const User = require("../models/users");
 
+const mongodb = require("mongodb");
 //encrypting the password
 const Bcrypt = require("bcrypt");
 
 //add users
 exports.postUser = async (req, res, next) => {
   try {
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
+    const { name, email, password } = req.body;
     const saltRounds = 10;
     Bcrypt.hash(password, saltRounds, async (err, hash) => {
-      console.log(err);
-      console.log(hash);
-      const user = await User.create({
-        name: name,
-        email: email,
+      const user = new User({
+        name,
+        email,
         password: hash,
+        isPremiumUser: false,
       });
-      res.status(200).json(user);
+      user.save().then(() => {
+        console.log("user created");
+        res.status(200).json(user);
+      });
     });
   } catch (err) {
     console.log("object");
@@ -31,9 +32,13 @@ exports.postUser = async (req, res, next) => {
 
 //get all the users from the database
 exports.getUsers = (req, res, next) => {
-  const user = User.findAll().then((data) => {
-    res.json(data);
-  });
+  User.find()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 function generateJwtToken(id, email) {
@@ -46,10 +51,9 @@ function generateJwtToken(id, email) {
 //check login details
 exports.postlogin = async (req, res, next) => {
   try {
-    const email = req.body.email;
-    const password = req.body.password;
-    const user = await User.findAll({ where: { email: email } });
-    Bcrypt.compare(password, user[0].password, (err, result) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email: email });
+    Bcrypt.compare(password, user.password, (err, result) => {
       if (err) {
         res.json({ success: false, message: "Something went wrong" });
       }
@@ -58,7 +62,7 @@ exports.postlogin = async (req, res, next) => {
           success: true,
           message:
             "you have logged in successfully please wait until it redirects",
-          token: generateJwtToken(user[0].id, user[0].email),
+          token: generateJwtToken(user._id, user.email),
         });
       } else {
         res.json({
@@ -74,12 +78,12 @@ exports.postlogin = async (req, res, next) => {
 
 exports.getUser = async (req, res, next) => {
   const id = req.params.id;
-  const userDetails = await User.findAll({ where: { id: id } });
+  const userDetails = await User.find({ _id: new mongodb.ObjectId(id) });
   res.json(userDetails);
 };
 
 exports.getPremiumUsers = (req, res, next) => {
-  User.findAll({ where: { isPremiumUser: 1 } }).then((result) => {
+  User.find({ isPremiumUser: true }).then((result) => {
     res.json(result);
   });
 };
