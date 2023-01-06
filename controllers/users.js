@@ -12,18 +12,23 @@ exports.postUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     const saltRounds = 10;
-    Bcrypt.hash(password, saltRounds, async (err, hash) => {
-      const user = new User({
-        name,
-        email,
-        password: hash,
-        isPremiumUser: false,
+    const use = User.findOne({ email: email });
+    if (!use) {
+      Bcrypt.hash(password, saltRounds, async (err, hash) => {
+        const user = new User({
+          name,
+          email,
+          password: hash,
+          isPremiumUser: false,
+        });
+        user.save().then(() => {
+          console.log("user created");
+          res.status(200).json(user);
+        });
       });
-      user.save().then(() => {
-        console.log("user created");
-        res.status(200).json(user);
-      });
-    });
+    } else {
+      res.status(400).send("User Already Exist");
+    }
   } catch (err) {
     console.log("object");
     res.status(400).send("User Already Exist");

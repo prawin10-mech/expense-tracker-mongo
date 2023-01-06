@@ -25,7 +25,7 @@ app.use("/password", forgotRouter);
 mongoose
   .connect(
     "mongodb+srv://praveen:Prawin10@cluster0.cdcefpk.mongodb.net/?retryWrites=true&w=majority"
-    // "mongodb://localhost:27017"
+    // "mongodb://localhost:27017/expenses"
   )
   .then(() => {
     app.listen(3000, () => {
